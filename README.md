@@ -26,4 +26,5 @@ theory_completion.lp : Theory completion to characterize ASP in G3. </br>
 
 # ToDO:
 1. Convert output formula to normal-form. </br>
-2. Test input for more complex formulas. </br>
+2. Add more G3 Interpretations. </br>
+3. Test input for more complex formulas. </br>
