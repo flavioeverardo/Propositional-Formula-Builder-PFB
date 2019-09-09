@@ -99,7 +99,7 @@ def main():
         print " ", formula
         control.load("lp/search_answer_sets.lp")
         ## Add formula
-        rule = "theory(X,Y,R) :- %s."%formula
+        rule = "op(X,Y,R) :- %s."%formula
         print "Adding formula to program:"
         print " ", rule
         control.add("base", [], rule)

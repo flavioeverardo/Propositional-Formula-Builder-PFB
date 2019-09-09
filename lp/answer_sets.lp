@@ -1,4 +1,4 @@
-:- not answer_set("x").
-:- not answer_set("y").
+:- not answer_set("p").
+:- not answer_set("q").
 :- answer_set("").
-:- answer_set("x y").
+:- answer_set("p q").
