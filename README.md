@@ -1,5 +1,5 @@
 # Propositional-Formula-Builder-PFB
-A very simple and initial implementation to construct propositional formulas from an interpretation in Gödel 3-value (G3) or Here-and-There (HT) logics
+A very simple and initial implementation to construct propositional formulas from an interpretation in Gödel 3-value (G3) or Here-and-There (HT) logics.
 
 PFB: Search either for answer sets or for a formula that satisfies a given list of input answer sets with clingo 5 and Python.</br>
 Both approaches follows G3 (HT) Properties to prove Strong Equivalence.
@@ -13,6 +13,10 @@ python pfb.py --search="answer sets" --formula="or(X,Y,R)"
 ```
 python soft_eng.py --search="program"
 ```
+
+# Dependencies
+- Python 2.7
+- clingo (5.4) with Python support. [clingo @ Potassco.org](https://www.potassco.org/clingo)
 
 # What else is in the box?
 search_answer_sets.lp: ASP driver for (1). </br>
