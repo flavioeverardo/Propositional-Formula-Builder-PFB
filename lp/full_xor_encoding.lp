@@ -1,12 +1,22 @@
+%% This file presents the full encoding used in the paper:
+%% Everardo,F.,Osorio,M.:
+%% Towards an Answer Set Programming Methodology for Constructing Programs Following a Semi-Automatic Approach.
+%% Accepted to apper in the Twelve Latin American Workshop on New Methods of Reasoning 2019 (LANMR 2019), and in CEUR.
+%%
+%% and the extended version
+%% Everardo,F.,Osorio,M.:
+%% Towards an Answer Set Programming Methodology for Constructing Programs Following a Semi-Automatic Approach – Extended and Revised version.
+%% Submitted to the Journal Electronic Notes in Theoretical Computer Science.
+
 %% search_formula.lp
 %% This ASP program is tailored for XOR or parity constraints/aggregates purposes.
 %% This program can either:
 %%   Test intermediate representations (propositional formulas), or
 %%   Guess new ones.
 %% 
-%% At first we can test the feasibility that the classical XOR formula, satisfies and given answer sets and Strong Equivalent properties by uncommenting Lines 48 and 49.
-%% Then, we could ask for a representation (which results in a constraint) by uncommenting Lines 54 and 55.
-%% Finally, we can test the resulting constraint by uncommenting Lines 60-62
+%% At first we can test the feasibility that the classical XOR formula, satisfies and given answer sets and Strong Equivalent properties by uncommenting Lines 58 and 59.
+%% Then, we could ask for a representation (which results in a constraint) by uncommenting Lines 64 and 65.
+%% Finally, we can test the resulting constraint by uncommenting Lines 70-72
 
 %% This approach inverts the standard procedure by starting from the answer sets, and Strong Equivalent properties.
 %% It uses brute force to test or calculate an encoding represented as thruth tables in G3 (HT).
