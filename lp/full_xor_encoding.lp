@@ -8,15 +8,18 @@
 %% Towards an Answer Set Programming Methodology for Constructing Programs Following a Semi-Automatic Approach – Extended and Revised version.
 %% Submitted to the Journal Electronic Notes in Theoretical Computer Science.
 
-%% search_formula.lp
+%% full_xor_encodig.lp
 %% This ASP program is tailored for XOR or parity constraints/aggregates purposes.
 %% This program can either:
 %%   Test intermediate representations (propositional formulas), or
 %%   Guess new ones.
 %% 
-%% At first we can test the feasibility that the classical XOR formula, satisfies and given answer sets and Strong Equivalent properties by uncommenting Lines 58 and 59.
-%% Then, we could ask for a representation (which results in a constraint) by uncommenting Lines 64 and 65.
-%% Finally, we can test the resulting constraint by uncommenting Lines 70-72
+%% This encoding receives a constant input value.
+%% Please change the xor constant value for either:
+%% 1: Simply guess for a formula satisfying the XOR SE properties.
+%% 2: Guess only for the constraint formula discarding candidate answer sets from an external generate process that satisfies the XOR SE properties.
+#const xor=1. 
+
 
 %% This approach inverts the standard procedure by starting from the answer sets, and Strong Equivalent properties.
 %% It uses brute force to test or calculate an encoding represented as thruth tables in G3 (HT).
@@ -34,42 +37,52 @@
 :- answer_set("p q").
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Strong Equivalent Properties %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Commutativity: X xor Y = Y xor X
-:- op(X,Y,R1), op(Y,X,R2), R1!=R2.
+%% Test or Guess %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Associativity: (X xor Y) xor Z = X xor (Y xor Z)
- left(X,Y,Z,R) :- op(X,Y,W1), op(W1,Z,R). %% Left
-right(X,Y,Z,R) :- op(Y,Z,W1), op(X,W1,R). %% Right
-:- left(X,Y,Z,R1), right(X,Y,Z,R2), R1 != R2.
+%% 1
+%% Guess for a propositional formula
+1 { xor(X,Y,Z) : value(Z) } 1 :- value(X), value(Y), xor=1.
+%% For consistency of the xor
+op(X,Y,R1) :- xor(X,Y,R1), xor=1.
+xor_t(X,Y,R1) :- xor(X,Y,R1), xor=1.
 
-%% Self Inverse: X xor X = 0
-:- op(X,X,R), R!=0.
+%% 2
+%% XOR as a Generate and Test
+%% XOR generate as:
+%% (x or not x) and (y or not y)
+xor_g(X,Y,Z) :- neg(X,X1), neg(Y,Y1), or(X,X1,Z1), or(Y,Y1,Z2), and(Z1,Z2,Z), xor=2.
+%#show xor_g/3.
 
-%% Identity: X xor 0 = not not X
-:- op(X,0,Y), neg(X,X1), neg(X1,Z), value(Y), Y != Z.
+%% XOR test as either:
+%% Guess for a propositional formula (constraint)
+1 { xor_t(X,Y,Z) : value(Z) } 1 :- value(X), value(Y), xor=2.
+%% or
+%% The classical XOR formula as a constraint.
+%% That is, with double negation = not not ((X v Y) ^ (not X v not Y))
+%xor_t(X,Y,Z2) :- or(X,Y,R1), neg(X,X1), neg(Y,Y1), or(X1,Y1,R2), and(R1,R2,Z), neg(Z,Z1), neg(Z1,Z2).
+#show xor_t/3.
+
+%% Definition of the Generate and Test XOR operator as
+op(X,Y,Z) :- xor_g(X,Y,Z1), xor_t(X,Y,Z2), and(Z1,Z2,Z), xor=2.
+%#show xor/3.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Test or Guess %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Please uncomment one of the three options below
+%% Strong Equivalent Properties %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Test the classical xor formula = (X v Y) ^ (not X v not Y)
-%% This yields UNSAT
-op(X,Y,Z) :- or(X,Y,R1), neg(X,X1), neg(Y,Y1), or(X1,Y1,R2), and(R1,R2,Z).
-#show op/3.
+%% Associativity: (X xor Y) xor Z = X xor (Y xor Z)
+ left(X,Y,Z,R) :- xor_t(X,Y,W1), xor_t(W1,Z,R). %% Left
+right(X,Y,Z,R) :- xor_t(Y,Z,W1), xor_t(X,W1,R). %% Right
+:- left(X,Y,Z,R1), right(X,Y,Z,R2), R1 != R2.
 
-%% Guess for a propositional formula
-%% This yields the single answer set:
-%% op(0,2,2) op(2,0,2) op(0,1,2) op(1,0,2) op(0,0,0) op(1,1,0) op(2,2,0) op(1,2,0) op(2,1,0)
-%1 { op(X,Y,Z) : value(Z) } 1 :- value(X), value(Y).
-%#show op/3.
+% Commutativity: X xor Y = Y xor X
+:- xor_t(X,Y,Z1), xor_t(Y,X,Z2), Z1 != Z2.
 
-%% Test classical xor as a constraint. That is, with double negation = not not ((X v Y) ^ (not X v not Y))
-%% This yields the same answer set as the guess single answer set:
-%% op(0,2,2) op(2,0,2) op(0,1,2) op(1,0,2) op(0,0,0) op(1,1,0) op(2,2,0) op(1,2,0) op(2,1,0)
-%op(X,Y,Z2) :- or(X,Y,R1), neg(X,X1), neg(Y,Y1), or(X1,Y1,R2), and(R1,R2,Z), neg(Z,Z1), neg(Z1,Z2).
-%#show op/3.
-%#show answer_set/1. %% Additionally, please comment the Input Answer Sets
+% Identity: X xor 0 = not not X
+:- xor_t(X,0,Y), neg(X,X1), neg(X1,Z), Y != Z.
+
+% Self_inverse for xor_t: X xor X = 0
+:- xor_t(X,X,Z), Z!= 0.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -116,8 +129,8 @@ completion_asp(A_ID,X,Y,R) :- op(X,Y,Z), completion(A_ID,X,Y,C), and(Z,C,R).
 
 consistent(A_ID):-completion_asp(A_ID,X,Y,R),value(R),R>0.
 
-incomplete(A_ID):-belongs(A_ID,x), completion_asp(A_ID,X,Y,Z), implication(Z,X,R), R<2.
-incomplete(A_ID):-belongs(A_ID,y), completion_asp(A_ID,X,Y,Z), implication(Z,Y,R), R<2.
+incomplete(A_ID):-belongs(A_ID,p), completion_asp(A_ID,X,Y,Z), implication(Z,X,R), R<2.
+incomplete(A_ID):-belongs(A_ID,q), completion_asp(A_ID,X,Y,Z), implication(Z,Y,R), R<2.
 
 answer_set(S) :- consistent(A_ID), not incomplete(A_ID), code(A_ID,S).
 

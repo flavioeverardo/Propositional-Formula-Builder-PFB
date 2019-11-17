@@ -16,7 +16,7 @@ code(3, "p q").
 completion_asp(A_ID,X,Y,R) :- op(X,Y,Z), completion(A_ID,X,Y,C), and(Z,C,R).
  
 consistent(A_ID):-completion_asp(A_ID,X,Y,R),value(R),R>0. 
-incomplete(A_ID):-belongs(A_ID,x), completion_asp(A_ID,X,Y,Z), implication(Z,X,R), R<2.
-incomplete(A_ID):-belongs(A_ID,y), completion_asp(A_ID,X,Y,Z), implication(Z,Y,R), R<2.
+incomplete(A_ID):-belongs(A_ID,p), completion_asp(A_ID,X,Y,Z), implication(Z,X,R), R<2.
+incomplete(A_ID):-belongs(A_ID,q), completion_asp(A_ID,X,Y,Z), implication(Z,Y,R), R<2.
 
 answer_set(S) :- consistent(A_ID), not incomplete(A_ID), code(A_ID,S).
