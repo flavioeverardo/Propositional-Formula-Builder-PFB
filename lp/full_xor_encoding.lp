@@ -47,15 +47,21 @@ op(X,Y,R1) :- xor(X,Y,R1), xor=1.
 xor_t(X,Y,R1) :- xor(X,Y,R1), xor=1.
 
 %% 2
+%% Test the classical logic XOR formula
+%% (p ∨ q) ∧ (¬p ∨ ¬q)
+op(X,Y,Z) :- or(X,Y,R1), neg(X,X1),neg(Y,Y1),or(X1,Y1,R2), and(R1,R2,Z), xor=2.
+xor_t(X,Y,R1) :- op(X,Y,R1), xor=2.
+
+%% 3
 %% XOR as a Generate and Test
 %% XOR generate as:
 %% (x or not x) and (y or not y)
-xor_g(X,Y,Z) :- neg(X,X1), neg(Y,Y1), or(X,X1,Z1), or(Y,Y1,Z2), and(Z1,Z2,Z), xor=2.
+xor_g(X,Y,Z) :- neg(X,X1), neg(Y,Y1), or(X,X1,Z1), or(Y,Y1,Z2), and(Z1,Z2,Z), xor=3.
 %#show xor_g/3.
 
 %% XOR test as either:
 %% Guess for a propositional formula (constraint)
-1 { xor_t(X,Y,Z) : value(Z) } 1 :- value(X), value(Y), xor=2.
+1 { xor_t(X,Y,Z) : value(Z) } 1 :- value(X), value(Y), xor=3.
 %% or
 %% The classical XOR formula as a constraint.
 %% That is, with double negation = not not ((X v Y) ^ (not X v not Y))
@@ -63,7 +69,7 @@ xor_g(X,Y,Z) :- neg(X,X1), neg(Y,Y1), or(X,X1,Z1), or(Y,Y1,Z2), and(Z1,Z2,Z), xo
 #show xor_t/3.
 
 %% Definition of the Generate and Test XOR operator as
-op(X,Y,Z) :- xor_g(X,Y,Z1), xor_t(X,Y,Z2), and(Z1,Z2,Z), xor=2.
+op(X,Y,Z) :- xor_g(X,Y,Z1), xor_t(X,Y,Z2), and(Z1,Z2,Z), xor=3.
 %#show xor/3.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
